@@ -12,6 +12,16 @@ require 'json'
 WWW_ROOT = ENV['WWW_ROOT'] || '/home/deploy/swift_academy/'
 HOMEWORKS_ROOT = File.expand_path('homeworks', WWW_ROOT)
 
+SMTP_OPTIONS = {
+  :from => 'donotreply@zenifytheweb.com',
+  :via => :smtp,
+  :via_options => {
+    :address => "127.0.0.1",
+    :port    => 25,
+    :domain  => 'bemyguide.com'
+  }
+}.freeze
+
 not_found do
   status 404
   'Ooops! That\'s not where you wanted to go'
@@ -112,7 +122,12 @@ namespace '/api' do
       raise ApiError.new('Opps. This round doesn\'t really exist') unless stage
 
       if File.exists?("./mail/#{stage}.erb")
-        Pony.mail(:to => game.hero.email, :via => :sendmail, body: erb("./mail/#{stage}"))
+        mail_details = {
+          to: game.hero.email,
+          subject: "Swifting around: an interactive mind game - Stage #{game.round}",
+          body: erb("./mail/#{stage}")
+        }
+        Pony.mail SMTP_OPTIONS.merge(mail_details)
       end
 
       erb stage
