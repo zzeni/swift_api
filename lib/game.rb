@@ -28,7 +28,7 @@ class Game
 
     File.open(STORAGE, File::RDWR|File::CREAT, 0644) do |f|
       f.flock(File::LOCK_EX)
-      f.write("#{Time.now.to_i}: #{state.to_json}")
+      f.write("#{Time.now.to_i}: #{state.to_json}\n")
     end
   end
 

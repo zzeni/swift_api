@@ -102,18 +102,20 @@ namespace '/api' do
 
   helpers do
     def play(game)
-      case game.round
-      when 0 then start
-      when 1 then round_1
-      when 2 then round_2
-      else
-        raise ApiError('Opps. This round doesn\'t really exist')
-      end
-    end
-  end
+      stages = {
+        '0' => :start,
+        '1' => :round_1,
+        '2' => :round_2
+      }
 
-  def start
-    Pony.mail(:to => 'emanolova@gmail.com', :via => :sendmail, body: erb('mail/start'))
-    erb :start
+      stage = stages[game.round.to_s]
+      raise ApiError.new('Opps. This round doesn\'t really exist') unless stage
+
+      if File.exists?("./mail/#{stage}.erb")
+        Pony.mail(:to => game.hero.email, :via => :sendmail, body: erb("./mail/#{stage}"))
+      end
+
+      erb stage
+    end
   end
 end
