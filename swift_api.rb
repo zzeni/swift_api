@@ -7,20 +7,39 @@ require './lib/game.rb'
 require './lib/api_error.rb'
 
 require 'json'
-#require 'byebug'
+
+if Sinatra::Base.development?
+  require 'byebug'
+end
 
 WWW_ROOT = ENV['WWW_ROOT'] || '/home/deploy/swift_academy/'
 HOMEWORKS_ROOT = File.expand_path('homeworks', WWW_ROOT)
 
-SMTP_OPTIONS = {
-  :from => 'donotreply@zenifytheweb.com',
-  :via => :smtp,
-  :via_options => {
-    :address => "127.0.0.1",
-    :port    => 25,
-    :domain  => 'bemyguide.com'
-  }
-}.freeze
+if Sinatra::Base.development?
+  SMTP_OPTIONS = {
+    :from => 'donotreply@zenifytheweb.com',
+    :via => :sendmail,
+    # :via_options => {
+    #   :address              => 'smtp.gmail.com',
+    #   :port                 => '587',
+    #   :enable_starttls_auto => true,
+    #   :user_name            => 'user',
+    #   :password             => 'password',
+    #   :authentication       => :plain, # :plain, :login, :cram_md5, no auth by default
+    #   :domain               => "courses.zenifytheweb.com" # the HELO domain provided by the client to the server
+    # }
+  }.freeze
+else
+    SMTP_OPTIONS = {
+    :from => 'donotreply@zenifytheweb.com',
+    :via => :smtp,
+    :via_options => {
+      :address => "127.0.0.1",
+      :port    => 25,
+      :domain  => 'courses.zenifytheweb.com'
+    }
+  }.freeze
+end
 
 not_found do
   status 404
@@ -121,12 +140,13 @@ namespace '/api' do
       stage = stages[game.round.to_s]
       raise ApiError.new('Opps. This round doesn\'t really exist') unless stage
 
-      if File.exists?("./mail/#{stage}.erb")
+      if File.exists?("./views/mail/#{stage}.erb")
         mail_details = {
           to: game.hero.email,
           subject: "Swifting around: an interactive mind game - Stage #{game.round}",
-          body: erb("./mail/#{stage}")
+          body: erb(:"mail/#{stage}")
         }
+
         Pony.mail SMTP_OPTIONS.merge(mail_details)
       end
 
