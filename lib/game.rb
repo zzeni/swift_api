@@ -6,16 +6,14 @@ class Game
   attr_reader :hero, :round
 
   def initialize(params)
-    wrong_input! unless params && params['message'] && params['message'] == 'game'
-    @round = 0
-    @hero = Hero.new(params['name'], params['email'])
-    save
-  end
-
-  def continue(params)
-    hero_key = params('hero_id')
-    load(hero_key)
-    wrong_input! unless params['round'] == round
+    if params['key']
+      load(params['key'])
+    else
+      wrong_input! unless params && params['message'] && params['message'] == 'game'
+      @round = 0
+      @hero = Hero.new(params['name'], params['email'])
+      save
+    end
   end
 
   def save
@@ -33,6 +31,15 @@ class Game
   end
 
   def load(key)
+    saves = {}
+    File.readlines(STORAGE).each do |line|
+      matchdata = line.match(/\A(\d+): (.+)\Z/)
+      saves[matchdata[1]] = JSON.parse(matchdata[2])
+    end
+    data = saves[key] or raise ApiError.new('Invalid key!')
+
+    @round = data['round'] + 1
+    @hero = Hero.new(data['hero'], data['email'], data['key'])
   end
 
   private
