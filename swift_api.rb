@@ -12,22 +12,21 @@ if Sinatra::Base.development?
   require 'byebug'
 end
 
+set :default_encoding, 'utf-8'
+set :encoding, 'utf-8'
+
 WWW_ROOT = ENV['WWW_ROOT'] || '/home/deploy/swift_academy/'
 HOMEWORKS_ROOT = File.expand_path('homeworks', WWW_ROOT)
 
 if Sinatra::Base.development?
   SMTP_OPTIONS = {
     :from => 'donotreply@zenifytheweb.com',
-    :via => :sendmail,
-    # :via_options => {
-    #   :address              => 'smtp.gmail.com',
-    #   :port                 => '587',
-    #   :enable_starttls_auto => true,
-    #   :user_name            => 'user',
-    #   :password             => 'password',
-    #   :authentication       => :plain, # :plain, :login, :cram_md5, no auth by default
-    #   :domain               => "courses.zenifytheweb.com" # the HELO domain provided by the client to the server
-    # }
+    :via => :smtp,
+    :via_options => {
+      :address              => "127.0.0.1",
+      :port                 => 1025,
+      :domain               => "courses.zenifytheweb.com"
+    }
   }.freeze
 else
     SMTP_OPTIONS = {
@@ -103,7 +102,7 @@ namespace '/api' do
     else
       output = 0
 
-      File.open(lock_file, File::RDWR|File::CREAT, 0644) do |f|
+      File.open(lock_file, File::RDWR|File::CREAT) do |f|
         f.flock(File::LOCK_EX)
         output = "lock file created..\n\n"
         output += %x(git fetch origin master && git reset --hard origin/master && git pull)
@@ -117,10 +116,40 @@ namespace '/api' do
     end
   end
 
-  post '/game' do
+  post '/game/start' do
     begin
-      @game = Game.new(params)
+      @game = Game.new
+      @game.start(params)
       play(@game)
+    rescue ApiError => error
+      status 500
+      '<p>Sorry your prequest/parameters were not correct. You can try again ;)</p>' +
+        '<p>Error : ' + error.message + '</p>' +
+        '<p>Parameters: ' + params.to_json + '</p>'
+    end
+  end
+
+  post '/game/continue' do
+    begin
+      @game = Game.new
+      @game.load(params.delete("key"))
+      @game.check(params)
+      play(@game)
+    rescue ApiError => error
+      status 500
+      '<p>Sorry your prequest/parameters were not correct. You can try again ;)</p>' +
+        '<p>Error : ' + error.message + '</p>' +
+        '<p>Parameters: ' + params.to_json + '</p>'
+    end
+  end
+
+  get '/game/complete' do
+    begin
+      @game = Game.new
+      @game.load(params.delete("key"))
+      @game.finish
+      @game.save
+      erb :complete
     rescue ApiError => error
       status 500
       '<p>Sorry your prequest/parameters were not correct. You can try again ;)</p>' +
@@ -131,24 +160,30 @@ namespace '/api' do
 
   helpers do
     def play(game)
-      stages = {
-        '0' => :start,
-        '1' => :round_1,
-        '2' => :round_2
+      stage = :initial
+
+      mail_details = {
+        to: game.hero.email,
+        subject: "Swifting around: an interactive mind game - Stage #{game.round}"
       }
 
-      stage = stages[game.round.to_s]
-      raise ApiError.new('Opps. This round doesn\'t really exist') unless stage
-
-      if File.exists?("./views/mail/#{stage}.erb")
-        mail_details = {
-          to: game.hero.email,
-          subject: "Swifting around: an interactive mind game - Stage #{game.round}",
-          body: erb(:"mail/#{stage}")
-        }
-
-        Pony.mail SMTP_OPTIONS.merge(mail_details)
+      case game.round.to_s
+      when "0"
+        stage = :start
+        @task = File.read("./db/tasks/task#{game.round}.txt", :encoding => 'utf-8')
+      when "1"
+        stage = :round_1
+        mail_details[:attachments] = { 'chuck.jpg' => File.read('./db/chuck.jpg') }
+      when "2"
+        stage = :round_2
+      else
+        raise ApiError.new('Opps. This round doesn\'t really exist')
       end
+
+      mail_details[:body] = erb(:"mail/#{stage}")
+      Pony.mail SMTP_OPTIONS.merge(mail_details)
+
+      @game.save
 
       erb stage
     end

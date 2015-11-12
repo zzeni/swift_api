@@ -1,3 +1,4 @@
+<div style="padding-left: 30px">
 Поздравления <%= @game.hero.name %>,
 
 Вече си в играта! :)
@@ -15,38 +16,9 @@
 
 И така.. за да продължиш нататък, ще трябва да решиш следната задача:
 
-  Един малко ресеян девелопър седнал да пише уеб форма. Но така и не успял да се сети как е синтаксисът на различните полета и в крайна сметка объркал всичко.
-
-  Опитай се да коригираш грешките му и изпрати формата към http://zenifytheweb.com/api/game
-
-    <form action="post">
-      <h3>Моля, попълвай само на кирилица!</h3>
-      <p>
-        <label for="answer_1">Кога е основана българската държава?</label>
-        <br>
-        <input type="checkbox" placeholder="ггг" name="answer_1">
-      </p>
-
-      <p>
-        <label for="answer_2">Кой е най-високият връх в Стара планина?</label>
-        <br>
-        <input type="email" placeholder="Мусала" name="answer_2" required>
-      </p>
-
-      <p>
-        <label for="answer_3">Кое диво животно е изкуствено "внесено" през 20ти век в България?</label>
-        <br>
-        <input type="radio" name="answer_3" val="broun"> кяфява мечка
-        <br>
-        <input type="radio" name="answer_3" val="black"> черна мечка
-        <br>
-        <input type="radio" name="answer_3" val="lynx"> рис
-      </p>
-
-      <p>
-        <input type="button" value="Изпрати">
-      </p>
-    </form>
+<pre>
+<%= @task.gsub('&','&amp;').gsub('<','&lt;').gsub('>','&gt;') %>
+</pre>
 
 За да преминаваш изпитанията, трябва да изпращаш коректните параметри по правилният начин!
 
@@ -55,3 +27,4 @@
 Успех!
 gamemaster
 
+</div>
