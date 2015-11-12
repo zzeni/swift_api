@@ -177,7 +177,7 @@ namespace '/api' do
 
       case game.round.to_s
       when "0"
-        stage = :start
+        stage = :round_0
         @task = File.read("./db/tasks/task#{game.round}.txt", :encoding => 'utf-8')
       when "1"
         stage = :round_1
