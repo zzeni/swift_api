@@ -68,6 +68,8 @@ class Game
         ' + params["photo"] + ' == "chuck.jpg"'
 
     when "2"
+      assert_check = params["javascript-rulles"] == "36144"
+    when "3"
       assert_check = params["result"] == "N189391C"
     else
       assert_check = false
@@ -81,7 +83,7 @@ class Game
   end
 
   def finish
-    wrong_input! unless round == 2
+    wrong_input! unless round == 3
 
     record = nil
     if File.exists(WINNERS)

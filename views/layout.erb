@@ -4,11 +4,22 @@
   <title>Mad Mind Mining</title>
   <style>
     body {
-      width: ;
+      width: 100%;
+      padding-top: 35px;
+    }
+    #container {
+      width: 60%;
+      margin: 0 auto;
+      padding: 30px;
+      border: 1px #ccc solid;
+      border-radius: 5px;
+      box-shadow: 4px 4px 5px 0 #999;
     }
   </style>
 </head>
 <body>
-  <%= yield %>
+  <div id="container">
+    <%= yield %>
+  </div>
 </body>
 </html>

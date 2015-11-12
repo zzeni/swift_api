@@ -1,0 +1,31 @@
+ <section id="playing-the-game">
+    <form action="http://courses.zenifytheweb.com/api/game/continue" method="post">
+      <p>
+        Type your key, please:
+        <input type="text" name="key" value="">
+      </p>
+      <p>
+        Let the JS to generate this:
+        <input id="js-generated-input" type="text" name="javascript-rulles" readonly>
+      </p>
+      <p>
+        <input type="submit" value="Go!">
+      </p>
+    </form>
+
+    <script>
+      var myVar = "let's keep it simple".length;
+      var myOtherVar = 213 % 36 - 5 * 3;
+      if (myVar = myOtherVar) {
+        myVar += 1;
+      } else {
+        myVar = myOtherVar;
+      }
+
+      var myDate = new Date;
+      myVar *= myDate.getFullYear() - Number(7);
+
+      document.getElementById("js-generated-input").value = myVar;
+    </script>
+
+  </section>

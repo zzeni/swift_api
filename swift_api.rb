@@ -116,6 +116,14 @@ namespace '/api' do
     end
   end
 
+  get '/game' do
+    erb :game
+  end
+
+  get '/game/start' do
+    erb :start
+  end
+
   post '/game/start' do
     begin
       @game = Game.new
@@ -176,6 +184,9 @@ namespace '/api' do
         mail_details[:attachments] = { 'chuck.jpg' => File.read('./db/chuck.jpg') }
       when "2"
         stage = :round_2
+        @task = File.read("./db/tasks/task#{game.round}.txt", :encoding => 'utf-8')
+      when "3"
+        stage = :round_3
       else
         raise ApiError.new('Opps. This round doesn\'t really exist')
       end
