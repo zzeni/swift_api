@@ -86,7 +86,7 @@ class Game
     wrong_input! unless round == 3
 
     record = nil
-    if File.exists(WINNERS)
+    if File.exists?(WINNERS)
       File.readlines(WINNERS, encoding: 'utf-8').each do |line|
         matchdata = line.match(/\A(\d+): (.+)\Z/)
         if matchdata
@@ -115,7 +115,7 @@ class Game
 
   private
   def get_award
-    Dir.glob('images/awards/*.png')[rand(21)]
+    Dir.glob('images/catz/*.png')[rand(19)]
   end
 
   def wrong_input!
