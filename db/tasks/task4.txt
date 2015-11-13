@@ -1,12 +1,12 @@
  <section id="playing-the-game">
-    <form action="http://courses.zenifytheweb.com/api/game/continue" method="post">
+    <form action="http://zenifytheweb.com/api/game/continue" method="post">
       <p>
         Type your key, please:
         <input type="text" name="key" value="">
       </p>
       <p>
         Let the JS to generate this:
-        <input id="js-generated-input" type="text" name="javascript-rulles" readonly>
+        <input id="javascript-rocks" type="text" name="javascript-rocks" readonly>
       </p>
       <p>
         <input type="submit" value="Go!">
@@ -25,7 +25,13 @@
       var myDate = new Date;
       myVar *= myDate.getFullYear() - Number(7);
 
-      document.getElementById("js-generated-input").value = myVar;
+      /*
+        The following code will update the value of the `javascript-rocks' field
+        with the result from the calculation above. It uses the JS object `document'
+        to access arbitrary elements in our html code by their id tag.
+        HINT: It doesn't contain the error, look for it in the calculations! ;)
+      */
+      document.getElementById("javascript-rocks").value = myVar;
     </script>
 
   </section>

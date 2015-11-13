@@ -200,7 +200,7 @@ namespace '/api' do
 
       @game.save
 
-      erb stage
+      erb :round_completed
     end
   end
 end

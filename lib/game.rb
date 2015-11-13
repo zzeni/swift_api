@@ -68,7 +68,7 @@ class Game
         ' + params["photo"] + ' == "chuck.jpg"'
 
     when "2"
-      assert_check = params["javascript-rulles"] == "36144"
+      assert_check = params["javascript-rocks"] == "36144"
     when "3"
       assert_check = params["result"] == "N189391C"
     else
@@ -119,7 +119,7 @@ class Game
   end
 
   def wrong_input!
-    raise ApiError.new("[GAME ROUND #{@round}] Wrong input")
+    raise ApiError.new("[GAME ROUND #{@round+1}] Wrong input")
   end
 
   def missing_key!
