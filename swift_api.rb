@@ -1,4 +1,6 @@
 # swift_api.rb
+# encoding: UTF-8
+
 require 'sinatra'
 require 'sinatra/namespace'
 require 'pony'
@@ -178,20 +180,22 @@ namespace '/api' do
       case game.round.to_s
       when "0"
         stage = :round_0
-        @task = File.read("./db/tasks/task#{game.round}.txt", :encoding => 'utf-8')
+        @task = File.read("./db/tasks/task1.txt", :encoding => 'utf-8')
+        mail_details[:attachments] = { 'task1.txt.zip' => File.read('./db/tasks/task1.txt.zip') }
       when "1"
         stage = :round_1
         mail_details[:attachments] = { 'chuck.jpg' => File.read('./db/chuck.jpg') }
       when "2"
         stage = :round_2
-        @task = File.read("./db/tasks/task#{game.round}.txt", :encoding => 'utf-8')
+        @task = File.read("./db/tasks/task4.txt", :encoding => 'utf-8')
+        mail_details[:attachments] = { 'task4.txt.zip' => File.read('./db/tasks/task4.txt.zip') }
       when "3"
         stage = :round_3
       else
         raise ApiError.new('Opps. This round doesn\'t really exist')
       end
 
-      mail_details[:body] = erb(:"mail/#{stage}")
+      mail_details[:html_body] = erb(:"mail/#{stage}", layout: false)
       Pony.mail SMTP_OPTIONS.merge(mail_details)
 
       @game.save
