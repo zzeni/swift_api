@@ -174,7 +174,7 @@ namespace '/api' do
 
       mail_details = {
         to: game.hero.email,
-        subject: "Swifting around: an interactive mind game - Stage #{game.round}"
+        subject: "Mind swifting: round #{game.round+1}"
       }
 
       case game.round.to_s
