@@ -115,7 +115,7 @@ class Game
 
   private
   def get_award
-    Dir.glob('images/catz/*.png')[rand(19)]
+    Dir.glob('images/catz/*.jpg')[rand(19)]
   end
 
   def wrong_input!
