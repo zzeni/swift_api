@@ -2,8 +2,9 @@
 require './lib/hero.rb'
 
 class Game
-  STORAGE = './db/game.json'.freeze
-  WINNERS = './db/winners.json'.freeze
+  ROOT_DIR = '/home/deploy/swift_api'.freeze
+  STORAGE = File.join(ROOT_DIR, '/db/game.json').freeze
+  WINNERS = File.join(ROOT_DIR, '/db/winners.json').freeze
 
   attr_reader :hero, :round, :award
 
@@ -58,15 +59,6 @@ class Game
         params["occupation"] == "ultimate hero" &&
         params["eyes_color"].downcase == "#0000ff" &&
         params["photo"] == "chuck.jpg"
-
-      puts '
-      assert_check =
-        ' + params["name"] + ' == "Chuck Norris" &&
-        ' + params["email"] + ' == "chuck@kicks.ass" &&
-        ' + params["occupation"] + ' == "ultimate hero" &&
-        ' + params["eyes_color"].downcase + ' == "#0000ff" &&
-        ' + params["photo"] + ' == "chuck.jpg"'
-
     when "2"
       assert_check = params["javascript-rocks"] == "36144"
     when "3"
