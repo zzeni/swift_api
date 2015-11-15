@@ -57,7 +57,7 @@ class Game
         params["name"] == "Chuck Norris" &&
         params["email"] == "chuck@kicks.ass" &&
         params["occupation"] == "ultimate hero" &&
-        params["eyes_color"].downcase == "#0000ff" &&
+        params["eyes_color"].to_s.downcase == "#0000ff" &&
         params["photo"] == "chuck.jpg"
     when "2"
       assert_check = params["javascript-rocks"] == "36144"
