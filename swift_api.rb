@@ -20,6 +20,12 @@ set :encoding, 'utf-8'
 WWW_ROOT = ENV['WWW_ROOT'] || '/home/deploy/swift_academy/'
 HOMEWORKS_ROOT = File.expand_path('homeworks', WWW_ROOT)
 
+TASK1 = File.read(File.join(WWW_ROOT, "./db/tasks/task1.txt"), :encoding => 'utf-8')
+TASK4 = File.read(File.join(WWW_ROOT, "./db/tasks/task4.txt"), :encoding => 'utf-8')
+TASK1_ZIP = File.read(File.join(WWW_ROOT, "./db/tasks/task1.txt.zip"))
+TASK4_ZIP = File.read(File.join(WWW_ROOT, "./db/tasks/task4.txt.zip"))
+CHUCK_PIC = File.read(File.join(WWW_ROOT, './db/chuck.jpg'))
+
 if Sinatra::Base.development?
   SMTP_OPTIONS = {
     :from => 'donotreply@zenifytheweb.com',
@@ -133,9 +139,11 @@ namespace '/api' do
       play(@game)
     rescue ApiError => error
       status 500
-      '<p>Sorry your prequest/parameters were not correct. You can try again ;)</p>' +
+      '<p>Sorry your request/parameters were not correct. You can try again ;)</p>' +
         '<p>Error : ' + error.message + '</p>' +
         '<p>Parameters: ' + params.to_json + '</p>'
+    rescue Exception => error
+      send_error(error)
     end
   end
 
@@ -147,9 +155,11 @@ namespace '/api' do
       play(@game)
     rescue ApiError => error
       status 500
-      '<p>Sorry your prequest/parameters were not correct. You can try again ;)</p>' +
+      '<p>Sorry your request/parameters were not correct. You can try again ;)</p>' +
         '<p>Error : ' + error.message + '</p>' +
         '<p>Parameters: ' + params.to_json + '</p>'
+    rescue Exception => error
+      send_error(error)
     end
   end
 
@@ -162,9 +172,11 @@ namespace '/api' do
       erb :complete
     rescue ApiError => error
       status 500
-      '<p>Sorry your prequest/parameters were not correct. You can try again ;)</p>' +
+      '<p>Sorry your request/parameters were not correct. You can try again ;)</p>' +
         '<p>Error : ' + error.message + '</p>' +
         '<p>Parameters: ' + params.to_json + '</p>'
+    rescue Exception => error
+      send_error(error)
     end
   end
 
@@ -180,15 +192,15 @@ namespace '/api' do
       case game.round.to_s
       when "0"
         stage = :round_0
-        @task = File.read("./db/tasks/task1.txt", :encoding => 'utf-8')
-        mail_details[:attachments] = { 'task1.txt.zip' => File.read('./db/tasks/task1.txt.zip') }
+        @task = TASK1
+        mail_details[:attachments] = { 'task1.txt.zip' => TASK1_ZIP }
       when "1"
         stage = :round_1
-        mail_details[:attachments] = { 'chuck.jpg' => File.read('./db/chuck.jpg') }
+        mail_details[:attachments] = { 'chuck.jpg' => CHUCK_PIC }
       when "2"
         stage = :round_2
-        @task = File.read("./db/tasks/task4.txt", :encoding => 'utf-8')
-        mail_details[:attachments] = { 'task4.txt.zip' => File.read('./db/tasks/task4.txt.zip') }
+        @task = TASK4
+        mail_details[:attachments] = { 'task4.txt.zip' => TASK4_ZIP }
       when "3"
         stage = :round_3
       else
@@ -201,6 +213,23 @@ namespace '/api' do
       @game.save
 
       erb :round_completed
+    end
+
+    def send_error(error)
+      body = "Error: #{error.try(:message) || error}\n\n"
+      body += "trace: #{error.try(:backtrace)}"
+
+      begin
+        Pony.mail SMTP_OPTIONS.merge(to: 'emanolova@gmail.com', subject: 'API_error', body: body)
+      rescue Exception => e
+        p "A TERRIBLE MISTAKE OCCURS. PLEASE DO SOMETHING!! :("
+        p "Error: #{e}"
+        p "Original error: #{error}"
+      end
+
+      '<p>Ooops, there was an unexpected error..</p>' +
+        '<p>Maybe you didn\'t do anything wrong, but the game is buggy.</p>' +
+        '<p>Just try in a few hours and if the error still happens, please let me know!</p>'
     end
   end
 end
