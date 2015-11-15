@@ -107,8 +107,8 @@ class Game
 
   private
   def get_award
-    path = Dir.glob('public/images/catz/*.jpg')[rand(19)]
-    path.gsub('public/images', 'http://zenifytheweb.com/img')
+    awards = Dir.glob(File.join(ROOT_DIR, 'public/images/catz/*.jpg'))
+    awards.sample.gsub(File.join(ROOT_DIR, 'public/images'), 'http://zenifytheweb.com/img')
   end
 
   def wrong_input!
