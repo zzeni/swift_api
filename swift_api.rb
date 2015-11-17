@@ -145,6 +145,7 @@ namespace '/api' do
     begin
       @game = Game.new
       @game.start(params)
+      raise ApiError("No email provided!") unless @game.hero.email
       play(@game)
     rescue ApiError => error
       status 500
