@@ -61,48 +61,56 @@ namespace '/api' do
 
     dir = query['dir']
 
+    pwd = Dir.pwd
     Dir.chdir(HOMEWORKS_ROOT)
 
-    return 'N/A' if Dir.pwd > File.absolute_path(dir)
+    begin
+      raise 'N/A' if Dir.pwd > File.absolute_path(dir)
 
-    if Dir.exists?(dir)
-      entries = Dir.entries(dir).reject {|x| x[0] == '.'}
-      entries.sort! {|a, b| a.downcase <=> b.downcase}
+      if Dir.exists?(dir)
+        entries = Dir.entries(dir).reject {|x| x[0] == '.'}
+        entries.sort! {|a, b| a.downcase <=> b.downcase}
 
-#      if %w(group1 group2).include?(File.basename(File.absolute_path(dir)))
-#        entries.reject! { |x| x =~ /\.html\Z/ }
-#      end
+  #      if %w(group1 group2).include?(File.basename(File.absolute_path(dir)))
+  #        entries.reject! { |x| x =~ /\.html\Z/ }
+  #      end
 
-      unless entries.empty?
-        result = "<ul class=\"jqueryFileTree\" style=\"display: none;\">"
-        dirs = ""
-        files = ""
+        unless entries.empty?
+          result = "<ul class=\"jqueryFileTree\" style=\"display: none;\">"
+          dirs = ""
+          files = ""
 
-        entries.each do |file|
-          rel = "#{dir}/#{file}"
+          entries.each do |file|
+            rel = "#{dir}/#{file}"
 
-          if Dir.exists?(File.join(dir,file))
-            dirs += "<li class=\"directory collapsed\"><a href=\"#\" rel=\"#{rel}/\">#{file}</a></li>"
-          else
-            ext = File.extname(file).sub(/\A\./,'')
-            files += "<li class=\"file ext_#{ext}\"><a href=\"#\" rel=\"/#{rel}\">#{file}</a></li>"
+            if Dir.exists?(File.join(dir,file))
+              dirs += "<li class=\"directory collapsed\"><a href=\"#\" rel=\"#{rel}/\">#{file}</a></li>"
+            else
+              ext = File.extname(file).sub(/\A\./,'')
+              files += "<li class=\"file ext_#{ext}\"><a href=\"#\" rel=\"/#{rel}\">#{file}</a></li>"
+            end
           end
-        end
 
-        result += dirs
-        result += files
-        result += "</ul>"
+          result += dirs
+          result += files
+          result += "</ul>"
+        end
+      else
+        raise "Ooops! Can't find your folder"
       end
-    else
-      return "Ooops! Can't find your folder"
+    rescue Exception => error
+      Dir.chdir(pwd)
+      return error
     end
 
+    Dir.chdir(pwd)
     return result
   end
 
   get '/update' do
     lock_file = 'updating.lock'
 
+    pwd = Dir.pwd
     Dir.chdir(WWW_ROOT)
 
     if File.exists?(lock_file)
@@ -122,6 +130,7 @@ namespace '/api' do
 
       "<pre>#{output}</pre>"
     end
+    Dir.chdir(pwd)
   end
 
   get '/game' do
