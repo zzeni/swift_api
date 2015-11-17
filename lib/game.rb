@@ -11,6 +11,9 @@ class Game
   def start(params)
     @round = 0
     wrong_input! unless params && params['message'] && params['message'] == 'game'
+    missing_field!(:name) unless params['name']
+    missing_field!(:email) unless params['email']
+
     @hero = Hero.new(params['name'], params['email'])
   end
 
@@ -117,6 +120,10 @@ class Game
 
   def missing_key!
     raise ApiError.new("Game cant load due to a missing key!")
+  end
+
+  def missing_field(name)
+    raise ApiError.new("Game cant load due to a missing #{field.to_s}!")
   end
 end
 
