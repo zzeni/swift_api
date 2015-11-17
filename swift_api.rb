@@ -18,13 +18,14 @@ set :default_encoding, 'utf-8'
 set :encoding, 'utf-8'
 
 WWW_ROOT = ENV['WWW_ROOT'] || '/home/deploy/swift_academy/'
+API_ROOT = ENV['API_ROOT'] || '/home/deploy/swift_api/'
 HOMEWORKS_ROOT = File.expand_path('homeworks', WWW_ROOT)
 
-TASK1 = File.read(File.join(WWW_ROOT, "./db/tasks/task1.txt"), :encoding => 'utf-8')
-TASK4 = File.read(File.join(WWW_ROOT, "./db/tasks/task4.txt"), :encoding => 'utf-8')
-TASK1_ZIP = File.read(File.join(WWW_ROOT, "./db/tasks/task1.txt.zip"))
-TASK4_ZIP = File.read(File.join(WWW_ROOT, "./db/tasks/task4.txt.zip"))
-CHUCK_PIC = File.read(File.join(WWW_ROOT, './db/chuck.jpg'))
+TASK1 = File.read(File.join(API_ROOT, "./db/tasks/task1.txt"), :encoding => 'utf-8')
+TASK4 = File.read(File.join(API_ROOT, "./db/tasks/task4.txt"), :encoding => 'utf-8')
+TASK1_ZIP = File.read(File.join(API_ROOT, "./db/tasks/task1.txt.zip"))
+TASK4_ZIP = File.read(File.join(API_ROOT, "./db/tasks/task4.txt.zip"))
+CHUCK_PIC = File.read(File.join(API_ROOT, './db/chuck.jpg'))
 
 if Sinatra::Base.development?
   SMTP_OPTIONS = {
