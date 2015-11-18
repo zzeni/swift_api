@@ -149,7 +149,7 @@ namespace '/api' do
       raise ApiError("No email provided!") unless @game.hero.email
       play(@game)
     rescue ApiError => error
-      status 500
+      # status 500
       '<p>Sorry your request/parameters were not correct. You can try again ;)</p>' +
         '<p>Error : ' + error.message + '</p>' +
         '<p>Parameters: ' + params.to_json + '</p>'
@@ -165,7 +165,7 @@ namespace '/api' do
       @game.check(params)
       play(@game)
     rescue ApiError => error
-      status 500
+      # status 500
       '<p>Sorry your request/parameters were not correct. You can try again ;)</p>' +
         '<p>Error : ' + error.message + '</p>' +
         '<p>Parameters: ' + params.to_json + '</p>'
@@ -182,7 +182,7 @@ namespace '/api' do
       @game.save
       erb :complete
     rescue ApiError => error
-      status 500
+      # status 500
       '<p>Sorry your request/parameters were not correct. You can try again ;)</p>' +
         '<p>Error : ' + error.message + '</p>' +
         '<p>Parameters: ' + params.to_json + '</p>'
