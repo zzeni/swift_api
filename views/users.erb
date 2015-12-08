@@ -1,0 +1,18 @@
+<table>
+  <tr>
+  <th>ID</th>
+  <th>Username</th>
+  <th>email</th>
+  <th>Avatar</th>
+  <th>Date registered</th>
+  </tr>
+  <% @users.each do |user| %>
+  <tr>
+    <td><%= user.id %></td>
+    <td><%= user.username %></td>
+    <td><%= user.email %></td>
+    <td><img src="<%= user.avatar_url %>" style="max-width: 50px; max-height: 50px"></td>
+    <td><%= user.created_at %></td>
+  </tr>
+  <% end %>
+</table>

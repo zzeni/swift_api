@@ -4,6 +4,7 @@
 require 'sinatra'
 require 'sinatra/namespace'
 require 'pony'
+require 'data_mapper'
 
 require './lib/game.rb'
 require './lib/api_error.rb'
@@ -21,11 +22,11 @@ WWW_ROOT = ENV['WWW_ROOT'] || '/home/deploy/swift_academy/'
 API_ROOT = ENV['API_ROOT'] || '/home/deploy/swift_api/'
 HOMEWORKS_ROOT = File.expand_path('homeworks', WWW_ROOT)
 
-TASK1 = File.read(File.join(API_ROOT, "./db/tasks/task1.txt"), :encoding => 'utf-8')
-TASK4 = File.read(File.join(API_ROOT, "./db/tasks/task4.txt"), :encoding => 'utf-8')
-TASK1_ZIP = File.read(File.join(API_ROOT, "./db/tasks/task1.txt.zip"))
-TASK4_ZIP = File.read(File.join(API_ROOT, "./db/tasks/task4.txt.zip"))
-CHUCK_PIC = File.read(File.join(API_ROOT, './db/chuck.jpg'))
+TASK1 = File.read("#{Dir.pwd}/db/tasks/task1.txt", :encoding => 'utf-8')
+TASK4 = File.read("#{Dir.pwd}/db/tasks/task4.txt", :encoding => 'utf-8')
+TASK1_ZIP = File.read("#{Dir.pwd}/db/tasks/task1.txt.zip")
+TASK4_ZIP = File.read("#{Dir.pwd}/db/tasks/task4.txt.zip")
+CHUCK_PIC = File.read("#{Dir.pwd}/db/chuck.jpg")
 
 if Sinatra::Base.development?
   SMTP_OPTIONS = {
@@ -48,6 +49,25 @@ else
     }
   }.freeze
 end
+
+DataMapper::setup(:default, "sqlite3://#{Dir.pwd}/db/examples.sqlite3")
+
+class User
+  include DataMapper::Resource
+  property :id, Serial
+  property :username, String, required: true, unique: true, format: /\A\w+\z/, length: 3..20
+  property :password, String, required: true, length: 6..20
+  property :email, String, required: true, unique: true, format: :email_address
+  property :avatar_url, String, format: :url, length: 10..200
+  property :created_at, DateTime
+end
+
+# Perform basic sanity checks and initialize all relationships
+# Call this when you've defined all your models
+DataMapper.finalize
+
+# automatically create the post table
+User.auto_upgrade!
 
 not_found do
   status 404
@@ -132,6 +152,53 @@ namespace '/api' do
       "<pre>#{output}</pre>"
     end
     Dir.chdir(pwd)
+  end
+
+  post "/examples/register" do
+    begin
+      raise ApiError.new("Passwords don't match!") unless params[:password] == params[:password_confirmation]
+
+      user = User.new(username: params[:username],
+                  password: params[:password],
+                  email: params[:email],
+                  avatar_url: params[:avatar_url]
+                  )
+
+      raise ApiError.new(user.errors.first[0]) unless user.save
+
+      "Successfully registered."
+    rescue Exception => error
+      status 510
+      { error: error.message }
+    end
+  end
+
+  post "/examples/check_username" do
+    begin
+      username = params['username']
+      raise ApiError.new("No username provided!") unless username
+
+      raise ApiError.new("Username " + username + " is taken!") if User.first(username: username)
+
+      "This username is available :)"
+    rescue Exception => error
+      status 510
+      { error: error.message }
+    end
+  end
+
+  get "/examples/users" do
+    @users = User.all
+    erb :users
+  end
+
+  get "/examples/users/:id" do
+    user = User.get(params[:id])
+    if user
+      user.to_json
+    else
+      { error: "User with id: #{params[:id]} not found."}
+    end
   end
 
   get '/game' do
