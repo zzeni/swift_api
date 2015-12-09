@@ -11,6 +11,12 @@ require './lib/api_error.rb'
 
 require 'json'
 
+require 'sinatra/cross_origin'
+
+configure do
+  enable :cross_origin
+end
+
 if Sinatra::Base.development?
   require 'byebug'
 end
@@ -174,16 +180,22 @@ namespace '/api' do
   end
 
   post "/examples/check_username" do
+    request.body.rewind  # in case someone already read it
+    data = URI.decode(request.body.read)
+    query = Rack::Utils.parse_nested_query(data)
+
     begin
-      username = params['username']
+      username = query['username']
       raise ApiError.new("No username provided!") unless username
 
       raise ApiError.new("Username " + username + " is taken!") if User.first(username: username)
 
-      "This username is available :)"
+      # content_type :json
+      # response.headers['Access-Control-Allow-Origin'] = '*'
+      { available: true, msg: "This username is available :)" }.to_json
     rescue Exception => error
       status 510
-      { error: error.message }
+      { error: error.message }.to_json
     end
   end
 
