@@ -184,12 +184,8 @@ namespace '/api' do
   end
 
   get "/examples/check_username" do
-    request.body.rewind  # in case someone already read it
-    data = URI.decode(request.body.read)
-    query = Rack::Utils.parse_nested_query(data)
-
     begin
-      username = query['username']
+      username = params['username']
       raise ApiError.new("No username provided!") unless username
 
       if User.first(username: username)
