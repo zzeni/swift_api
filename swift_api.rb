@@ -161,6 +161,10 @@ namespace '/api' do
   end
 
   post "/examples/register" do
+    request.body.rewind  # in case someone already read it
+    data = URI.decode(request.body.read)
+    params = Rack::Utils.parse_nested_query(data)
+
     begin
       raise ApiError.new("Passwords don't match!") unless params[:password] == params[:password_confirmation]
 
@@ -179,7 +183,7 @@ namespace '/api' do
     end
   end
 
-  post "/examples/check_username" do
+  get "/examples/check_username" do
     request.body.rewind  # in case someone already read it
     data = URI.decode(request.body.read)
     query = Rack::Utils.parse_nested_query(data)
@@ -188,11 +192,11 @@ namespace '/api' do
       username = query['username']
       raise ApiError.new("No username provided!") unless username
 
-      raise ApiError.new("Username " + username + " is taken!") if User.first(username: username)
-
-      # content_type :json
-      # response.headers['Access-Control-Allow-Origin'] = '*'
-      { available: true, msg: "This username is available :)" }.to_json
+      if User.first(username: username)
+        { available: false, msg: "This username is NOT available :(" }.to_json
+      else
+        { available: true, msg: "This username is available :)" }.to_json
+      end
     rescue Exception => error
       status 510
       { error: error.message }.to_json
