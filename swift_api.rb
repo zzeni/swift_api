@@ -166,12 +166,12 @@ namespace '/api' do
     params = Rack::Utils.parse_nested_query(data)
 
     begin
-      raise ApiError.new("Passwords don't match!") unless params[:password] == params[:password_confirmation]
+      raise ApiError.new("Passwords don't match!") unless params['password'] == params['password_confirmation']
 
-      user = User.new(username: params[:username],
-                  password: params[:password],
-                  email: params[:email],
-                  avatar_url: params[:avatar_url]
+      user = User.new(username: params['username'],
+                  password: params['password'],
+                  email: params['email'],
+                  avatar_url: params['avatar_url']
                   )
 
       raise ApiError.new(user.errors.first[0]) unless user.save
@@ -192,6 +192,22 @@ namespace '/api' do
         { available: false, msg: "This username is NOT available :(" }.to_json
       else
         { available: true, msg: "This username is available :)" }.to_json
+      end
+    rescue Exception => error
+      status 510
+      { error: error.message }.to_json
+    end
+  end
+
+  get "/examples/check_email" do
+    begin
+      email = params['email']
+      raise ApiError.new("No email provided!") unless email
+
+      if User.first(username: email)
+        "available"
+      else
+        "taken"
       end
     rescue Exception => error
       status 510
