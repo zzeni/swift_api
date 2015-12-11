@@ -189,9 +189,9 @@ namespace '/api' do
       raise ApiError.new("No username provided!") unless username
 
       if User.first(username: username)
-        { available: false, msg: "This username is NOT available :(" }.to_json
+        "available"
       else
-        { available: true, msg: "This username is available :)" }.to_json
+        "taken"
       end
     rescue Exception => error
       status 510
