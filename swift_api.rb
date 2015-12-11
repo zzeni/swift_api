@@ -189,9 +189,9 @@ namespace '/api' do
       raise ApiError.new("No username provided!") unless username
 
       if User.first(username: username)
-        "available"
-      else
         "taken"
+      else
+        "available"
       end
     rescue Exception => error
       status 510
@@ -205,9 +205,9 @@ namespace '/api' do
       raise ApiError.new("No email provided!") unless email
 
       if User.first(username: email)
-        "available"
-      else
         "taken"
+      else
+        "available"
       end
     rescue Exception => error
       status 510
