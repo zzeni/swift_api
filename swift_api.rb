@@ -89,7 +89,7 @@ namespace '/api' do
     dir = query['dir']
 
     pwd = Dir.pwd
-    Dir.chdir(HOMEWORKS_ROOT)
+    Dir.chdir(WWW_ROOT)
 
     begin
       raise 'N/A' if Dir.pwd > File.absolute_path(dir)
@@ -126,6 +126,7 @@ namespace '/api' do
         raise "Ooops! Can't find your folder"
       end
     rescue Exception => error
+      puts "Error: " + error
       Dir.chdir(pwd)
       return error
     end
