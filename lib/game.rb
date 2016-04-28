@@ -111,7 +111,7 @@ class Game
   private
   def get_award
     awards = Dir.glob(File.join(ROOT_DIR, 'public/images/catz/*.jpg'))
-    awards.sample.gsub(File.join(ROOT_DIR, 'public/images'), 'http://zenifytheweb.com/img')
+    awards.sample.gsub(File.join(ROOT_DIR, 'public/images'), 'http://zenlabs.pro/img')
   end
 
   def wrong_input!

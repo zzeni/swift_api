@@ -5,6 +5,7 @@ require 'sinatra'
 require 'sinatra/namespace'
 require 'pony'
 require 'data_mapper'
+require 'tilt/erubis'
 
 require './lib/game.rb'
 require './lib/api_error.rb'
@@ -36,22 +37,23 @@ CHUCK_PIC = File.read("#{Dir.pwd}/db/chuck.jpg")
 
 if Sinatra::Base.development?
   SMTP_OPTIONS = {
-    :from => 'donotreply@zenifytheweb.com',
+    :from => 'donotreply@zenlabs.pro',
     :via => :smtp,
     :via_options => {
       :address              => "127.0.0.1",
       :port                 => 1025,
-      :domain               => "courses.zenifytheweb.com"
+      :domain               => "bemyguide.com"
     }
   }.freeze
 else
     SMTP_OPTIONS = {
-    :from => 'donotreply@zenifytheweb.com',
+    :from => 'donotreply@zenlabs.pro',
     :via => :smtp,
     :via_options => {
-      :address => "127.0.0.1",
+      :address => "mail.bemyguide.com",
       :port    => 25,
-      :domain  => 'courses.zenifytheweb.com'
+      :domain  => 'bemyguide.com',
+      :openssl_verify_mode => OpenSSL::SSL::VERIFY_NONE
     }
   }.freeze
 end

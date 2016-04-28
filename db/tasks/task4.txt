@@ -1,5 +1,5 @@
  <section id="playing-the-game">
-    <form action="http://zenifytheweb.com/api/game/continue" method="post">
+    <form action="http://zenlabs.pro/api/game/continue" method="post">
       <p>
         Type your key, please:
         <input type="text" name="key" value="">
