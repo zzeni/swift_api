@@ -63,7 +63,7 @@ class Game
         params["eyes_color"].to_s.downcase == "#0000ff" &&
         params["photo"] == "chuck.jpg"
     when "2"
-      assert_check = params["javascript-rocks"] == "36144"
+      assert_check = params["javascript-rocks"] == "36162"
     when "3"
       assert_check = params["result"] == "N189391C"
     else
