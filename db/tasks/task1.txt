@@ -5,25 +5,25 @@
   <form action="get">
     <h3>Моля, попълвай само на латиница!</h3>
     <p>
-      <label for="answer_1">Коя година е основана българската държава?</label>
+      <label for="answer_1">Коя година е приет HTML5 стандарта?</label>
       <br>
       <input type="checkbox" id="number" placeholder="???" name="answer_1" readonly>
     </p>
 
     <p>
-      <label for="answer_2">Кой е най-високият връх в Стара планина?</label>
+      <label for="answer_2">Кой е създателят на JSON нотацията?</label>
       <br>
       <input type="email" placeholder="????" name="answer_2" required>
     </p>
 
     <p>
-      <label for="answer_3">Кое диво животно е изкуствено "внесено" през 20ти век в България?</label>
+      <label for="answer_3">Кой от изброените HTML атрибути не е глобален?</label>
       <br>
-      <input type="radio" name="answer_1" val="broun"> кяфява мечка
+      <input type="radio" name="answer_1" val="data"> data
       <br>
-      <input type="radio" name="answer_2" val="black"> черна мечка
+      <input type="radio" name="answer_2" value="andwer_2"> title
       <br>
-      <input type="radio" name="answer_3" val="lynx"> рис
+      <input type="radio" name="answer_3" val="alt"> alt
     </p>
 
     <p>

@@ -52,9 +52,9 @@ class Game
     case @round.to_s
     when "0"
       assert_check =
-        params["answer_1"] == "681" &&
-        params["answer_2"].downcase == "botev" &&
-        params["answer_3"] == "black"
+        params["answer_1"] == "2014" &&
+        params["answer_2"].gsub(/\W/, '').downcase == "douglascrockford" &&
+        params["answer_3"] == "alt"
     when "1"
       assert_check =
         params["name"] == "Chuck Norris" &&
