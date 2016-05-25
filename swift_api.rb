@@ -50,7 +50,7 @@ else
     :from => 'donotreply@zenlabs.pro',
     :via => :smtp,
     :via_options => {
-      :address => "mail.bemyguide.com",
+      :address => "bemyguide.com",
       :port    => 25,
       :domain  => 'bemyguide.com',
       :openssl_verify_mode => OpenSSL::SSL::VERIFY_NONE
