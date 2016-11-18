@@ -122,7 +122,7 @@ class Game
     raise ApiError.new("Game cant load due to a missing key!")
   end
 
-  def missing_field(name)
+  def missing_field!(name)
     raise ApiError.new("Game cant load due to a missing #{field.to_s}!")
   end
 end
