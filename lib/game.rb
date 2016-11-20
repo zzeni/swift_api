@@ -123,7 +123,7 @@ class Game
   end
 
   def missing_field!(name)
-    raise ApiError.new("Game cant load due to a missing #{field.to_s}!")
+    raise ApiError.new("Game cant load due to a missing #{name}!")
   end
 end
 
