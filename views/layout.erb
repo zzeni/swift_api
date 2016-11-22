@@ -7,19 +7,31 @@
       margin: 0;
       padding: 0;
       width: 100%;
-      padding-top: 35px;
+      padding: 35px 0;
       font-family: serif;
+      line-height: 1.5em;
+      font-size: 16px;
     }
     #container {
-      width: 60%;
+      width: 800px;
+      max-width: 90%;
+      box-sizing: border-box;
       margin: 0 auto;
-      padding: 30px;
-      border: 1px #ccc solid;
+      padding: 30px 45px;
+      border: 30px bisque groove;
       border-radius: 5px;
       box-shadow: 4px 4px 5px 0 #999;
     }
     .mono {
       font-family: monospace;
+    }
+    .center {
+      text-align: center;
+    }
+    mark {
+      background-color: yellow;
+      padding: 2px 4px;
+      border: 1px dashed red;
     }
     table {
       width: 100%;
@@ -38,6 +50,23 @@
     }
     td.avatar {
       text-align: center;
+    }
+    h1, h2, h3, h4 {
+      font-weight: normal;
+      margin-bottom: 1.4em;
+    }
+
+    h1 {
+      font-size: 1.8em;
+      font-family: sans-serif;
+    }
+
+    h3 { font-size: 1.3em; }
+    h4 { font-size: 1.1em; }
+    p { font-size: 1em; }
+
+    h1 span {
+      font-weight: bold;
     }
   </style>
 </head>

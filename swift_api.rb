@@ -22,12 +22,15 @@ if Sinatra::Base.development?
   require 'byebug'
 end
 
+p "DEVELOPMENT MODE: #{Sinatra::Base.development?}"
+
+
 set :default_encoding, 'utf-8'
 set :encoding, 'utf-8'
 
-WWW_ROOT = ENV['WWW_ROOT'] || '/home/deploy/swift_academy/'
+WWW_ROOT = ENV['WWW_ROOT'] || '/home/deploy/zenlabs/courses/sa-fe/'
 API_ROOT = ENV['API_ROOT'] || '/home/deploy/swift_api/'
-HOMEWORKS_ROOT = File.expand_path('homeworks', WWW_ROOT)
+HOMEWORKS_ROOT = '/home/deploy/zenlabs/courses/Archive/'
 
 TASK1 = File.read("#{Dir.pwd}/db/tasks/task1.txt", :encoding => 'utf-8')
 TASK4 = File.read("#{Dir.pwd}/db/tasks/task4.txt", :encoding => 'utf-8')
@@ -50,7 +53,7 @@ else
     :from => 'donotreply@zenlabs.pro',
     :via => :smtp,
     :via_options => {
-      :address => "bemyguide.com",
+      :address => "127.0.0.1",
       :port    => 25,
       :domain  => 'bemyguide.com',
       :openssl_verify_mode => OpenSSL::SSL::VERIFY_NONE
@@ -91,7 +94,7 @@ namespace '/api' do
     dir = query['dir']
 
     pwd = Dir.pwd
-    Dir.chdir(WWW_ROOT)
+    Dir.chdir(HOMEWORKS_ROOT)
 
     begin
       raise 'N/A' if Dir.pwd > File.absolute_path(dir)
@@ -116,7 +119,7 @@ namespace '/api' do
               dirs += "<li class=\"directory collapsed\"><a href=\"#\" rel=\"#{rel}/\">#{file}</a></li>"
             else
               ext = File.extname(file).sub(/\A\./,'')
-              files += "<li class=\"file ext_#{ext}\"><a href=\"#\" rel=\"/#{rel}\">#{file}</a></li>"
+              files += "<li class=\"file ext_#{ext}\"><a href=\"#\" rel=\"./#{rel}\">#{file}</a></li>"
             end
           end
 
@@ -125,10 +128,10 @@ namespace '/api' do
           result += "</ul>"
         end
       else
-        raise "Ooops! Can't find your folder"
+        raise "Ooops! Can't find your folder: " + Dir.pwd + "/" + dir
       end
     rescue Exception => error
-      puts "Error: " + error
+      puts "Error: " + error.to_s
       Dir.chdir(pwd)
       return error
     end
